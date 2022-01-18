@@ -20,9 +20,11 @@ module.exports = function (mongoose){
             schema.phone = req.body.phone;
             let password = req.body.mPin;
             schema.mPin = await service.encryptPassword(password);
-           
+            let user = {};
+            user._id = schema._id;
+            user.phone = schema.phone;
             await userSchema.addUser(schema);
-            utils.sendResponse(req,res,'SUCCESS',user,"Successfully Created Account",200);
+            utils.sendResponse(req,res,'SUCCESS',user,"Successfully Created Account",201);
             
         } catch (error) {
             utils.sendResponse(req,res,'bad request',{},error.message,400);

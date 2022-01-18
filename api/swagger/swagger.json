@@ -1,0 +1,654 @@
+{
+   "swagger": "2.0",
+   "info": {
+      "description": "This is a simple API",
+      "version": "1.0.0",
+      "title": "Digital Vault API"
+   },
+   "tags": [
+      {
+         "name": "Users",
+         "description": "Operations about user"
+      },
+      {
+         "name": "Sites",
+         "description": "User added sites related operation"
+      }
+   ],
+   "securityDefinitions": {
+      "Bearer": {
+         "type": "apiKey",
+         "name": "Authorization",
+         "in": "header"
+      }
+   },
+   "paths": {
+      "/users/signup": {
+         "post": {
+            "tags": [
+               "Users"
+            ],
+            "summary": "Creates new user in database",
+            "operationId": "signup",
+            "description": "New user account will be created",
+            "consumes": [
+               "application/json"
+            ],
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [
+               {
+                  "in": "body",
+                  "name": "body",
+                  "description": "Signup data to add",
+                  "schema": {
+                     "$ref": "#/definitions/signupSchema"
+                  }
+               }
+            ],
+            "responses": {
+               "201": {
+                  "description": "user created"
+               },
+               "400": {
+                  "description": "invalid input, object invalid"
+               },
+               "409": {
+                  "description": "user already exists"
+               }
+            }
+         }
+      },
+      "/users/otp": {
+         "post": {
+            "tags": [
+               "Users"
+            ],
+            "summary": "Send OTP",
+            "operationId": "otp",
+            "description": "Send OTP to user number",
+            "consumes": [
+               "application/json"
+            ],
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [
+               {
+                  "in": "body",
+                  "name": "body",
+                  "description": "user phone number",
+                  "schema": {
+                     "$ref": "#/definitions/otpSchema"
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OTP sent"
+               },
+               "400": {
+                  "description": "invalid input, object invalid"
+               },
+               "409": {
+                  "description": "user already exists"
+               }
+            }
+         }
+      },
+      "/users/signin": {
+         "post": {
+            "tags": [
+               "Users"
+            ],
+            "summary": "User Login",
+            "operationId": "signin",
+            "description": "Login in into exsisting user account",
+            "consumes": [
+               "application/json"
+            ],
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [
+               {
+                  "in": "body",
+                  "name": "body",
+                  "description": "login data",
+                  "schema": {
+                     "type": "object",
+                     "required": [
+                        "userName",
+                        "mPin"
+                     ],
+                     "properties": {
+                        "userName": {
+                           "type": "string",
+                           "minLength": 10,
+                           "example": 4088675309
+                        },
+                        "mPin": {
+                           "type": "string",
+                           "minLength": 4,
+                           "example": 40886
+                        }
+                     }
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "Login Successfull"
+               },
+               "400": {
+                  "description": "invalid username or password"
+               }
+            }
+         }
+      },
+      "/users/forgot-password": {
+         "post": {
+            "tags": [
+               "Users"
+            ],
+            "summary": "Forgot password",
+            "operationId": "forgotPassword",
+            "description": "To recover the forgot password",
+            "consumes": [
+               "application/json"
+            ],
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [
+               {
+                  "in": "body",
+                  "name": "body",
+                  "description": "user data",
+                  "schema": {
+                     "type": "object",
+                     "required": [
+                        "phone"
+                     ],
+                     "properties": {
+                        "phone": {
+                           "type": "number",
+                           "minLength": 10,
+                           "example": 4088675309
+                        }
+                     }
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OTP sent to the user phone number"
+               },
+               "400": {
+                  "description": "invalid username"
+               }
+            }
+         }
+      },
+      "/users/reset-password": {
+         "post": {
+            "tags": [
+               "Users"
+            ],
+            "security": [
+               {
+                  "Bearer": []
+               }
+            ],
+            "summary": "Change password",
+            "operationId": "resetPassword",
+            "description": "Find user using token and change password with valid otp",
+            "consumes": [
+               "application/json"
+            ],
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [
+               {
+                  "in": "body",
+                  "name": "body",
+                  "description": "user data",
+                  "schema": {
+                     "type": "object",
+                     "required": [
+                        "OTP",
+                        "mPin",
+                        "confirmMpin"
+                     ],
+                     "properties": {
+                        "OTP": {
+                           "type": "number",
+                           "minLength": 6
+                        },
+                        "mPin": {
+                           "type": "number",
+                           "minLength": 4,
+                           "example": 1234
+                        },
+                        "confirmMpin": {
+                           "type": "number",
+                           "minLength": 4,
+                           "example": 1234
+                        }
+                     }
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "Password changed succesfully"
+               },
+               "400": {
+                  "description": "invalid otp"
+               }
+            }
+         }
+      },
+      "/sites/home": {
+         "get": {
+            "tags": [
+               "Sites"
+            ],
+            "security": [
+               {
+                  "Bearer": []
+               }
+            ],
+            "summary": "Home page",
+            "operationId": "home",
+            "description": "Displays all the sites saved by user",
+            "consumes": [
+               "application/json"
+            ],
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [],
+            "responses": {
+               "200": {
+                  "description": "Home page"
+               },
+               "400": {
+                  "description": "invalid user"
+               }
+            }
+         }
+      },
+      "/sites/add-site": {
+         "post": {
+            "tags": [
+               "Sites"
+            ],
+            "security": [
+               {
+                  "Bearer": []
+               }
+            ],
+            "summary": "Add different sites",
+            "operationId": "addSite",
+            "description": "Save new websites with password",
+            "consumes": [
+               "application/json"
+            ],
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [
+               {
+                  "in": "body",
+                  "name": "body",
+                  "description": "website data",
+                  "schema": {
+                     "type": "object",
+                     "required": [
+                        "userId",
+                        "folder",
+                        "url",
+                        "siteName",
+                        "userName",
+                        "password"
+                     ],
+                     "properties": {
+                        "userId": {
+                           "type": "string"
+                        },
+                        "folder": {
+                           "type": "string",
+                           "example": "socialMedia or bank or wallet"
+                        },
+                        "url": {
+                           "type": "string"
+                        },
+                        "siteName": {
+                           "type": "string"
+                        },
+                        "userName": {
+                           "type": "string"
+                        },
+                        "password": {
+                           "type": "string"
+                        },
+                        "notes": {
+                           "type": "string"
+                        }
+                     }
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "Succesfully added site."
+               },
+               "400": {
+                  "description": "Failed to add site."
+               }
+            }
+         }
+      },
+      "/sites/sync": {
+         "post": {
+            "tags": [
+               "Sites"
+            ],
+            "security": [
+               {
+                  "Bearer": []
+               }
+            ],
+            "summary": "Sync Data to cloud",
+            "operationId": "syncData",
+            "description": "Uploads data from data base to cloud",
+            "consumes": [
+               "application/json"
+            ],
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [],
+            "responses": {
+               "200": {
+                  "description": "Data synced sucessfully"
+               },
+               "400": {
+                  "description": "Sync failed"
+               }
+            }
+         }
+      },
+      "/sites/edit": {
+         "post": {
+            "tags": [
+               "Sites"
+            ],
+            "security": [
+               {
+                  "Bearer": []
+               }
+            ],
+            "summary": "Edit exsisting sites",
+            "operationId": "editSite",
+            "description": "updated password of exsisting site or update any other data of exsisting site",
+            "consumes": [
+               "application/json"
+            ],
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [
+               {
+                  "in": "body",
+                  "name": "body",
+                  "description": "website data",
+                  "schema": {
+                     "type": "object",
+                     "required": [
+                        "userId",
+                        "folder",
+                        "url",
+                        "siteName",
+                        "userName",
+                        "password"
+                     ],
+                     "properties": {
+                        "userId": {
+                           "type": "string"
+                        },
+                        "folder": {
+                           "type": "string",
+                           "example": "socialMedia or bank or wallet"
+                        },
+                        "url": {
+                           "type": "string"
+                        },
+                        "siteName": {
+                           "type": "string"
+                        },
+                        "userName": {
+                           "type": "string"
+                        },
+                        "password": {
+                           "type": "string"
+                        },
+                        "notes": {
+                           "type": "string"
+                        }
+                     }
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "Succesfully updated site."
+               },
+               "400": {
+                  "description": "Failed to update site."
+               }
+            }
+         }
+      },
+      "/sites/copy": {
+         "post": {
+            "tags": [
+               "Sites"
+            ],
+            "security": [
+               {
+                  "Bearer": []
+               }
+            ],
+            "summary": "Copy password",
+            "operationId": "copyPassword",
+            "description": "Copy password to clipboard when clicked on copy button",
+            "consumes": [
+               "application/json"
+            ],
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [
+               {
+                  "in": "body",
+                  "name": "body",
+                  "description": "website data",
+                  "schema": {
+                     "type": "object",
+                     "required": [
+                        "userId",
+                        "folder",
+                        "siteName"
+                     ],
+                     "properties": {
+                        "userId": {
+                           "type": "string"
+                        },
+                        "folder": {
+                           "type": "string",
+                           "example": "socialMedia or bank or wallet"
+                        },
+                        "siteName": {
+                           "type": "string"
+                        }
+                     }
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "Password copied to clipboard."
+               },
+               "400": {
+                  "description": "Failed to  copy."
+               }
+            }
+         }
+      },
+      "/sites/open-url": {
+         "post": {
+            "tags": [
+               "Sites"
+            ],
+            "security": [
+               {
+                  "Bearer": []
+               }
+            ],
+            "summary": "Open URL",
+            "operationId": "openUrl",
+            "description": "When clicked on url, url is opened in default website",
+            "consumes": [
+               "application/json"
+            ],
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [
+               {
+                  "in": "body",
+                  "name": "body",
+                  "description": "website data",
+                  "schema": {
+                     "type": "object",
+                     "required": [
+                        "url"
+                     ],
+                     "properties": {
+                        "url": {
+                           "type": "string"
+                        }
+                     }
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "Opened url in website."
+               },
+               "400": {
+                  "description": "Failed to open url."
+               }
+            }
+         }
+      },
+      "/sites/search": {
+         "post": {
+            "tags": [
+               "Sites"
+            ],
+            "security": [
+               {
+                  "Bearer": []
+               }
+            ],
+            "summary": "Search sites",
+            "operationId": "searchSite",
+            "description": "Search site name or folder name",
+            "consumes": [
+               "application/json"
+            ],
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [
+               {
+                  "in": "body",
+                  "name": "body",
+                  "description": "website data",
+                  "schema": {
+                     "type": "object",
+                     "required": [
+                        "userId",
+                        "searchElement"
+                     ],
+                     "properties": {
+                        "userId": {
+                           "type": "string"
+                        },
+                        "searchElement": {
+                           "type": "string"
+                        }
+                     }
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "Site found."
+               },
+               "400": {
+                  "description": "Failed to get site."
+               }
+            }
+         }
+      }
+   },
+   "definitions": {
+      "signupSchema": {
+         "type": "object",
+         "required": [
+            "phone",
+            "mPin",
+            "confirmMpin"
+         ],
+         "properties": {
+            "phone": {
+               "type": "string",
+               "minLength": 10,
+               "example": 4088675309
+            },
+            "mPin": {
+               "type": "string",
+               "minLength": 4,
+               "example": 1234
+            },
+            "confirmMpin": {
+               "$ref": "#/definitions/signupSchema/properties/mPin"
+            }
+         }
+      },
+      "otpSchema": {
+         "type": "object",
+         "required": [
+            "phone"
+         ],
+         "properties": {
+            "phone": {
+               "type": "string",
+               "minLength": 10,
+               "example": 4088675309
+            }
+         }
+      }
+   },
+   "host": "localhost:8081",
+   "basePath": "/api/v1",
+   "schemes": [
+      "http"
+   ]
+}
