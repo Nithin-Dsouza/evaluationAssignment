@@ -5,7 +5,6 @@ module.exports = function(express,app,mongoose){
     const validator = require("../validators/user")();
     const authenticate = require("../auth/auth")();
 
-    
     router.get('/home',authenticate.verifyToken,controller.homePage);
     router.post('/add-site',authenticate.verifyToken,controller.createSite);
     router.post('/sync',authenticate.verifyToken,controller.syncData);

@@ -5,9 +5,7 @@ const bcrypt = require('bcrypt');
 const ncp = require("copy-paste");
 const { LogoScrape } = require('logo-scrape');
 module.exports = function(){
-
     let vaultService = {};
-
     vaultService.encryptPassword = async(password) => {
         try {
             const salt = await bcrypt.genSalt(10);
@@ -78,7 +76,6 @@ module.exports = function(){
             throw error;
         }
     }
-
 
     return vaultService;
 }

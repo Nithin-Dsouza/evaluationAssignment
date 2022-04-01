@@ -236,7 +236,6 @@ module.exports = function (mongoose){
         }
     }
 
-
     vaultController.copy= async(req,res) => {
         try {
             let data = await siteSchema.findSite({userId:req.body.userId});

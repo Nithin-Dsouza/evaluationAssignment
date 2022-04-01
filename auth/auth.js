@@ -4,17 +4,13 @@ const config = require('../config/config');
 const utils = require('../utils/utils')();
 const TOKEN_SECRET=config.defaults.TOKEN_SECRET; 
 module.exports = function(){
-
     let vaultAuth = {};
 
     vaultAuth.genrateToken = async(data) => {
-
         return jwt.sign(data,TOKEN_SECRET)
-
     }
 
     vaultAuth.verifyToken = async(req,res,next) => {
-
         try {
             const authHeader = req.headers['authorization']
             const token = authHeader && authHeader.split(' ')[1]
@@ -29,10 +25,5 @@ module.exports = function(){
         }
 
     }
-
-
-
-
-
     return vaultAuth;
 }

@@ -1,7 +1,6 @@
 'use strict';
 module.exports = function(schema,mongoose){
 
-
     schema.statics.createSite = async function(site){
         try {
             await site.save();
@@ -18,7 +17,6 @@ module.exports = function(schema,mongoose){
             throw error;
         }
     }
-
 
     schema.statics.findSite = async function(data){
         try {
